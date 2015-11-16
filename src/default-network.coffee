@@ -61,6 +61,16 @@ getOnWin32 = (callback) ->
       result.defaultGateway = config.defaultGateway
       callback(null, result)
 
+getOnDarwin = (callback) ->
+  exec 'route -n get default', (error, stdout, stderr) ->
+    return callback(error) if error
+    defaultGateway = (stdout.match(/gateway:\s*(.+)\s*\n/) || [])[1]
+    defaultInterface = (stdout.match(/interface:\s*(.+)\s*\n/) || [])[1]
+    data = {}
+    data.defaultGateway = defaultGateway if defaultGateway?
+    data.defaultInterface = defaultInterface if defaultInterface?
+    callback(null, data)
+
 get = (callback) ->
   platform = require('os').platform()
   collector = switch platform

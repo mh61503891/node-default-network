@@ -57,8 +57,8 @@ getOnWin32 = (callback) ->
     getInterface config.index, (error, data) ->
       return callback(error) if error
       result = {}
-      result.defaultInterface = data
       result.defaultGateway = config.defaultGateway
+      result.defaultInterface = data
       callback(null, result)
 
 getOnDarwin = (callback) ->

@@ -71,6 +71,23 @@ getOnDarwin = (callback) ->
     data.defaultInterface = defaultInterface if defaultInterface?
     callback(null, data)
 
+getOnLinux = (callback) ->
+  childProcess = require('child_process')
+  childProcess.exec '/sbin/route -n', (error, stdout, stderr) ->
+    return callback(error) if error
+    line = (stdout.match(/(^0.0.0.0.*\n)/m) ||[])[1].split(/\s+/)
+    defaultGateway = line[1]
+    defaultInterface = line[7]
+    data = {}
+    data.defaultGateway = defaultGateway if defaultGateway?
+    data.defaultInterface = defaultInterface if defaultInterface?
+    callback(null, data)
+
+getOnDefault = (callback) ->
+  data = {
+  }
+  callback(null, data)
+
 get = (callback) ->
   platform = require('os').platform()
   collector = switch platform

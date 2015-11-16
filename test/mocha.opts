@@ -1,0 +1,2 @@
+--require mocha-clean/brief
+--compilers coffee:coffee-script/register

@@ -1,0 +1,53 @@
+{
+  "name": "default-network",
+  "version": "0.0.1",
+  "description": "A Node.js module to get default gateway and default interface.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "gulp test"
+  },
+  "os": [
+    "win32",
+    "darwin",
+    "linux"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mh61503891/default-network.git"
+  },
+  "keywords": [
+    "win32",
+    "darwin",
+    "linux",
+    "net",
+    "network",
+    "child_process",
+    "wmi",
+    "route"
+  ],
+  "author": {
+    "name": "Masayuki Higashino",
+    "email": "mh.on.web@gmail.com",
+    "url": "http://msyk.hgsn.info"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mh61503891/default-network/issues"
+  },
+  "homepage": "https://github.com/mh61503891/default-network#readme",
+  "dependencies": {
+    "coffee-script": "^1.10.0",
+    "csv-parse": "^1.0.0"
+  },
+  "devDependencies": {
+    "chai": "^3.4.1",
+    "coffeelint-stylish": "^0.1.2",
+    "gulp": "^3.9.0",
+    "gulp-coffeelint": "^0.5.0",
+    "gulp-jsonlint": "^1.1.1",
+    "gulp-load-plugins": "^1.1.0",
+    "gulp-mocha": "^2.2.0",
+    "mocha": "^2.3.3",
+    "mocha-clean": "^1.0.0"
+  }
+}

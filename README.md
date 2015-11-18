@@ -2,7 +2,9 @@
 
 A Node.js module to get **default gateway** and **default interface**.
 
-The value from the callback function `get()` is depend on following commands by using [chid_process](https://nodejs.org/api/child_process.html) provided by Node.js.
+100% Pure Java**Script**:kissing_cat: 
+
+This module is depend on following commands by using [chid_process](https://nodejs.org/api/child_process.html) provided by Node.js.
 
 - win32
 	- `wmic path Win32_NetworkAdapterConfiguration get *`

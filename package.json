@@ -13,7 +13,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mh61503891/default-network.git"
+    "url": "git+https://github.com/mh61503891/node-default-network.git"
   },
   "keywords": [
     "win32",
@@ -32,9 +32,9 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mh61503891/default-network/issues"
+    "url": "https://github.com/mh61503891/node-default-network/issues"
   },
-  "homepage": "https://github.com/mh61503891/default-network#readme",
+  "homepage": "https://github.com/mh61503891/node-default-network#readme",
   "dependencies": {
     "coffee-script": "^1.10.0",
     "csv-parse": "^1.0.0"

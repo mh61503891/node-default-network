@@ -2,7 +2,7 @@
 
 A Node.js module to get **default gateway** and **default interface**.
 
-100% Pure Java**Script**:kissing_cat: 
+100% Pure Java**Script**😽
 
 This module is depend on following commands by using [chid_process](https://nodejs.org/api/child_process.html) provided by Node.js.
 

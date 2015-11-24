@@ -1,6 +1,6 @@
 {
   "name": "default-network",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A Node.js module to get default gateway and default interface.",
   "main": "src/index.js",
   "scripts": {

@@ -4,7 +4,7 @@ A Node.js module to get **default gateway** and **default interface**.
 
 100% Pure Java**Script**😽
 
-This module is depend on following commands by using [chid_process](https://nodejs.org/api/child_process.html) provided by Node.js.
+This module depends on following commands by using [chid_process](https://nodejs.org/api/child_process.html) provided by Node.js.
 
 - win32
 	- `wmic path Win32_NetworkAdapterConfiguration get *`
@@ -89,7 +89,7 @@ node_modules\.bin\mocha
 
 ## Author
 
-- Masayuki Higashino
+Masayuki Higashino
 
 ## License
 

@@ -1,5 +1,5 @@
 expect = require('chai').expect
-defaultNetwork = require('../src/default-network')
+defaultNetwork = require('../src/index')
 net = require('net')
 os = require('os')
 

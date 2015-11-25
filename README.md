@@ -12,6 +12,12 @@ This module depends on following commands by using [chid_process](https://nodejs
 - darwin: `route -n get default`
 - linux: `route -n`
 
+## Installation
+
+```bash
+npm install default-network
+```
+
 ## API
 
 ### get(callback)

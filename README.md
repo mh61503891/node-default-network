@@ -28,18 +28,18 @@ Asynchronously gets a object which contains `defaultGateway` and `defaultInterfa
 
 How to get default gateway and default interface.
 
-An example code: `example1.coffee`
+An example code: `example1.js`
 
-```coffee
-# written in CoffeeScript
-route = require('default-network')
-route.get (error, data) ->
-  console.log(data)
+```js
+var route = require('default-network');
+route.get(function(error, data) {
+  return console.log(data);
+});
 ```
 
 An example output:
 
-```coffee
+```js
 { defaultGateway: '192.168.1.1', defaultInterface: 'en0' }
 ```
 
@@ -47,19 +47,19 @@ An example output:
 
 How to get default interface from `os.networkInterfaces()`.
 
-An example code: `example2.coffee`
+An example code: `example2.js`
 
-```coffee
-# written in CoffeeScript
-os = require('os')
-route = require('default-network')
-route.get (error, data) ->
-  console.log(os.networkInterfaces()[data.defaultInterface])
+```js
+var os = require('os');
+var route = require('default-network');
+route.get(function(error, data) {
+  return console.log(os.networkInterfaces()[data.defaultInterface]);
+});
 ```
 
 An example output:
 
-```coffee
+```js
 [ { address: '2001:db8::',
     netmask: 'ffff:ffff:ffff:ffff::',
     family: 'IPv6',

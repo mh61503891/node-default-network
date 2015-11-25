@@ -33,7 +33,7 @@ An example code: `example1.js`
 ```js
 var route = require('default-network');
 route.get(function(error, data) {
-  return console.log(data);
+  console.log(data);
 });
 ```
 
@@ -53,7 +53,7 @@ An example code: `example2.js`
 var os = require('os');
 var route = require('default-network');
 route.get(function(error, data) {
-  return console.log(os.networkInterfaces()[data.defaultInterface]);
+  console.log(os.networkInterfaces()[data.defaultInterface]);
 });
 ```
 

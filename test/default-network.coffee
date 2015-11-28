@@ -8,19 +8,20 @@ describe 'default-network', ->
     data = null
     before (done) ->
       defaultNetwork.get (error, result) ->
-        return throw error if error
         data = result
-        done()
-    it 'returns an data object', ->
+        console.log data
+        done(error)
+    it 'is an data object', ->
       expect(data).to.be.an.any('object')
-    describe 'data', ->
-      it "includes 'defaultInterface'", ->
-        expect(data).to.include.keys('defaultInterface')
-      it "includes 'defaultGateway'", ->
-        expect(data).to.include.keys('defaultGateway')
-      describe 'defaultInterface', ->
-        it "is included in os.networkInterfaces()", ->
-          expect(os.networkInterfaces()).to.include.keys(data.defaultInterface)
-      describe 'defaultGateway', ->
-        it "is IP", ->
-          expect(net.isIP(data.defaultGateway)).to.be.not.zero
+    it "has interface names which are included in os.networkInterfaces()", ->
+      for iface, values of data
+        expect(os.networkInterfaces()).to.include.keys(iface)
+    it 'has values which include a family and an address', ->
+      for iface, values of data
+        for value in values
+          expect(['IPv4', 'IPv6']).to.include(value.family)
+          switch value.family
+            when 'IPv4'
+              expect(net.isIPv4(value.address)).to.be.true
+            when 'IPv6'
+              expect(net.isIPv6(value.address)).to.be.true

@@ -36,6 +36,7 @@
   },
   "homepage": "https://github.com/mh61503891/node-default-network#readme",
   "dependencies": {
+    "async": "1.5.0",
     "coffee-script": "1.10.0",
     "csv-parse": "1.0.1"
   },

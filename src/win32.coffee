@@ -3,19 +3,19 @@ parseCSV = require('csv-parse')
 exec = require('child_process').exec
 async = require('async')
 
-wmic = (cls, keys, callback) ->
-  command = "wmic path #{cls} get #{keys.join(',')} /format:csv"
-  exec command, (error, stdout, stderr) ->
-    return callback(error) if error
-    parseCSV stdout, {
-      columns: true
-      rowDelimiter: '\r\r\n'
-      skip_empty_lines: true
-      trim: true
-    } , (error, records) ->
-      callback(error, records)
+collector = (callback) ->
 
-getOnWin32 = (callback) ->
+  wmic = (cls, keys, callback) ->
+    command = "wmic path #{cls} get #{keys.join(',')} /format:csv"
+    exec command, (error, stdout, stderr) ->
+      return callback(error) if error?
+      parseCSV stdout, {
+        columns: true
+        rowDelimiter: '\r\r\n'
+        skip_empty_lines: true
+        trim: true
+      } , (error, records) ->
+        callback(error, records)
 
   getAdapterConfigs = (callback) ->
     wmic 'Win32_NetworkAdapterConfiguration',
@@ -29,7 +29,7 @@ getOnWin32 = (callback) ->
 
   getDefaultGateway = (callback) ->
     getAdapterConfigs (error, records) ->
-      return callback(error) if error
+      return callback(error) if error?
       data = {}
       for record in records
         continue if not record['IPEnabled']?
@@ -53,24 +53,26 @@ getOnWin32 = (callback) ->
 
   getInterface = (index, callback) ->
     getAdapters (error, records) ->
-      return callback(error) if error
+      return callback(error) if error?
       for record in records
         if record['Index'] == index
           return callback(null, record['NetConnectionID'])
       callback(new Error("inteface #{index} is not available"))
 
-  getDefaultGateway (error, config) ->
-    return callback(error) if error
-    indexes = Object.keys(config)
+  getDefaultGateway (error, gateways) ->
+    return callback(error) if error?
+    indexes = Object.keys(gateways)
     async.map indexes,
       (index, callback) ->
-        getInterface index, (error, iface) ->
-          callback(error, {index: index, iface: iface} )
-      (error, list) ->
+        getInterface index, (error, name) ->
+          callback(error) if error?
+          callback(error, {index: index, name: name} )
+      (error, ifaces) ->
+        callback(error) if error?
         data = {}
-        for e in list
-          data[e.iface] = config[e.index]
+        for iface in ifaces
+          data[iface.name] = gateways[iface.index]
         callback(null, data)
 
 module.exports =
-  collector: getOnWin32
+  collector: collector

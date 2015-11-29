@@ -9,8 +9,6 @@ describe 'default-network', ->
     before (done) ->
       defaultNetwork.collect (error, result) ->
         data = result
-        console.log data
-        console.log os.networkInterfaces()[Object.keys(data)[0]]
         done(error)
     it 'is an data object', ->
       expect(data).to.be.an.any('object')

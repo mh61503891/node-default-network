@@ -1,6 +1,6 @@
 net = require('net')
-parseCSV = require('csv-parse')
 exec = require('child_process').exec
+parseCSV = require('csv-parse')
 async = require('async')
 
 collector = (callback) ->
@@ -17,7 +17,7 @@ collector = (callback) ->
       } , (error, records) ->
         callback(error, records)
 
-  getAdapterConfigs = (callback) ->
+  getAdapterConfig = (callback) ->
     wmic 'Win32_NetworkAdapterConfiguration',
       ['Index', 'IPEnabled', 'DefaultIPGateway'], (error, records) ->
         callback(error, records)
@@ -28,7 +28,7 @@ collector = (callback) ->
         callback(error, records)
 
   getDefaultGateway = (callback) ->
-    getAdapterConfigs (error, records) ->
+    getAdapterConfig (error, records) ->
       return callback(error) if error?
       data = {}
       for record in records
@@ -66,7 +66,7 @@ collector = (callback) ->
       (index, callback) ->
         getInterface index, (error, name) ->
           callback(error) if error?
-          callback(error, {index: index, name: name} )
+          callback(null, {index: index, name: name} )
       (error, ifaces) ->
         callback(error) if error?
         data = {}

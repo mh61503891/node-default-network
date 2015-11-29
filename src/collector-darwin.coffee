@@ -11,6 +11,8 @@ getDefaultRoute = (family, callback) ->
     defaultInterface = (stdout.match(/interface:\s*(.+)\s*\n/) || [])[1]
     if not defaultGateway? || not defaultInterface?
       return callback(new Error('defaultGateway or defaultInterface not found'))
+    if not net.isIP(defaultGateway)
+      return callback(new Error("defaultGateway not found: #{defaultGateway}"))
     data = {
       defaultGateway: defaultGateway
       defaultInterface: defaultInterface

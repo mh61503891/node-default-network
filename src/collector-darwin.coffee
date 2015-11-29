@@ -3,7 +3,7 @@ exec = require('child_process').exec
 
 getDefaultRoute = (family, callback) ->
   exec "route -n get #{family} default", (error, stdout, stderr) ->
-    unless family == '-inet' or family == '-inet6'
+    if not (family == '-inet' or family == '-inet6')
       return callback(new Error("unsupported family option: #{family}"))
     return callback(error) if error?
     return callback(new Error(stderr.trim())) if stderr != ''

@@ -6,7 +6,7 @@ getDefaultRoute = (family, callback) ->
     if not (family == '-inet' or family == '-inet6')
       return callback(new Error("unsupported family option: #{family}"))
     return callback(error) if error?
-    return callback(new Error(stderr.trim())) if stderr != ''
+    return callback(new Error(stderr.trim())) if stderr.trim() != ''
     defaultGateway = (stdout.match(/gateway:\s*(.+)\s*\n/) || [])[1]
     defaultInterface = (stdout.match(/interface:\s*(.+)\s*\n/) || [])[1]
     if not defaultGateway? || not defaultInterface?
@@ -19,25 +19,17 @@ getDefaultRoute = (family, callback) ->
     }
     callback(error, data)
 
-getDefaultRouteByInet4 = (callback) ->
-  getDefaultRoute '-inet', (error, data) ->
-    callback(error, data)
-
-getDefaultRouteByInet6 = (callback) ->
-  getDefaultRoute '-inet6', (error, data) ->
-    callback(error, data)
-
-collector = (callback) ->
-  getDefaultRouteByInet4 (error4, data4) ->
-    getDefaultRouteByInet6 (error6, data6) ->
+collect = (callback) ->
+  getDefaultRoute '-inet', (error4, data4) ->
+    getDefaultRoute '-inet6', (error6, data6) ->
       data = {}
-      if data4?
+      if data4? and not error4?
         data[data4.defaultInterface] || = []
         data[data4.defaultInterface].push {
           family: 'IPv4'
           address: data4.defaultGateway
         }
-      if data6?
+      if data6? and not error6?
         data[data6.defaultInterface] || = []
         data[data6.defaultInterface].push {
           family: 'IPv6'
@@ -46,4 +38,4 @@ collector = (callback) ->
       callback(null, data)
 
 module.exports =
-  collector: collector
+  collect: collect

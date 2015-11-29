@@ -1,11 +1,8 @@
-get = (callback) ->
-  platform = require('os').platform()
-  collector = switch platform
-    when 'win32'  then require('./collector-win32').collector
-    when 'darwin' then require('./collector-darwin').collector
-    when 'linux'  then require('./collector-linux').collector
-    else -> callback(new Error("unsupported platform: #{platform}"))
-  collector (error, data) -> callback(error, data)
-
+platform = require('os').platform()
+api = switch platform
+  when 'win32'  then require('./api-win32')
+  when 'darwin' then require('./api-darwin')
+  when 'linux'  then require('./api-linux')
+  else -> callback(null, {} )
 module.exports =
-  get: get
+  collect: api.collect

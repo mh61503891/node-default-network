@@ -2,7 +2,7 @@ net = require('net')
 exec = require('child_process').exec
 async = require('async')
 
-getRouteCommand = (callback) ->
+getRouteCommandPath = (callback) ->
   paths = [
     'route',
     '/sbin/route' # for Debian
@@ -21,7 +21,7 @@ getDefaultRouteByInet4 = (path, callback) ->
   exec "#{path} -n -A inet | awk '$4~/UG/ {print $2,$8;}'",
     (error, stdout, stderr) ->
       return callback(error) if error?
-      return callback(new Error(stderr.trim())) if stderr != ''
+      return callback(new Error(stderr.trim())) if stderr.trim() != ''
       [defaultGateway, defaultInterface] = stdout.trim().split(' ')
       if not defaultGateway? || not defaultInterface?
         return callback(new Error("UG not found"))
@@ -29,13 +29,13 @@ getDefaultRouteByInet4 = (path, callback) ->
         defaultGateway: defaultGateway
         defaultInterface: defaultInterface
       }
-      callback(error, data)
+      callback(null, data)
 
 getDefaultRouteByInet6 = (path, callback) ->
   exec "#{path} -n -A inet6 | awk '$3~/UG/ {print $2,$7;}'",
     (error, stdout, stderr) ->
       return callback(error) if error?
-      return callback(new Error(stderr.trim())) if stderr != ''
+      return callback(new Error(stderr.trim())) if stderr.trim() != ''
       [defaultGateway, defaultInterface] = stdout.trim().split(' ')
       if not defaultGateway? || not defaultInterface?
         return callback(new Error("UG not found"))
@@ -43,11 +43,10 @@ getDefaultRouteByInet6 = (path, callback) ->
         defaultGateway: defaultGateway
         defaultInterface: defaultInterface
       }
-      callback(error, data)
+      callback(null, data)
 
-collector = (callback) ->
-  getRouteCommand (error, path) ->
-    return callback(error) if error?
+collect = (callback) ->
+  getRouteCommandPath (error, path) ->
     getDefaultRouteByInet4 path, (error4, data4) ->
       getDefaultRouteByInet6 path, (error6, data6) ->
         data = {}
@@ -66,4 +65,4 @@ collector = (callback) ->
         callback(null, data)
 
 module.exports =
-  collector: collector
+  collect: collect

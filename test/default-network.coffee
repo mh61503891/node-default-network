@@ -9,7 +9,6 @@ describe 'default-network', ->
     before (done) ->
       defaultNetwork.get (error, result) ->
         data = result
-        console.log data
         done(error)
     it 'is an data object', ->
       expect(data).to.be.an.any('object')

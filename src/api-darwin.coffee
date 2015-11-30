@@ -1,41 +1,51 @@
 net = require('net')
 exec = require('child_process').exec
 
-getDefaultRoute = (family, callback) ->
-  exec "route -n get #{family} default", (error, stdout, stderr) ->
-    if not (family == '-inet' or family == '-inet6')
-      return callback(new Error("unsupported family option: #{family}"))
+getDefaultNetwork = (command, callback) ->
+  exec command, (error, stdout, stderr) ->
     return callback(error) if error?
     return callback(new Error(stderr.trim())) if stderr.trim() != ''
-    defaultGateway = (stdout.match(/gateway:\s*(.+)\s*\n/) || [])[1]
-    defaultInterface = (stdout.match(/interface:\s*(.+)\s*\n/) || [])[1]
-    if not defaultGateway? || not defaultInterface?
-      return callback(new Error('defaultGateway or defaultInterface not found'))
-    if not net.isIP(defaultGateway)
-      return callback(new Error("defaultGateway not found: #{defaultGateway}"))
-    data = {
-      defaultGateway: defaultGateway
-      defaultInterface: defaultInterface
-    }
-    callback(error, data)
+    return callback(null, new Object) if stdout.trim() == ''
+    data = {}
+    stdout = stdout.trim()
+    for line in stdout.split('\n')
+      [defaultGateway, defaultInterface] = line.split(' ')
+      if not defaultGateway? || not defaultInterface?
+        return callback(new Error("parse error: #{stdout}"))
+      if not net.isIP(defaultGateway)
+        return callback(new Error("parse error: #{stdout}"))
+      data[defaultInterface] || = []
+      family = switch net.isIP(defaultGateway)
+        when 4 then 'IPv4'
+        when 6 then 'IPv6'
+      if not family?
+        return callback(new Error("invalid address: #{stdout}"))
+      data[defaultInterface].push {
+        family: family
+        address: defaultGateway
+      }
+    callback(null, data)
+
+getDefaultNetworkByInet4 = (callback) ->
+  getDefaultNetwork "netstat -rn -f inet | awk '$3~/UG/ {print $2,$6;}'",
+    (error, data) ->
+      callback(error, data)
+
+getDefaultNetworkByInet6 = (callback) ->
+  getDefaultNetwork "netstat -rn -f inet6 | awk '$3~/UG/ {print $2,$4;}'",
+    (error, data) ->
+      callback(error, data)
 
 collect = (callback) ->
-  getDefaultRoute '-inet', (error4, data4) ->
-    getDefaultRoute '-inet6', (error6, data6) ->
-      data = {}
-      if data4? and not error4?
-        data[data4.defaultInterface] || = []
-        data[data4.defaultInterface].push {
-          family: 'IPv4'
-          address: data4.defaultGateway
-        }
-      if data6? and not error6?
-        data[data6.defaultInterface] || = []
-        data[data6.defaultInterface].push {
-          family: 'IPv6'
-          address: data6.defaultGateway
-        }
-      callback(null, data)
+  getDefaultNetworkByInet4 (error4, data4) ->
+    getDefaultNetworkByInet6 (error6, data6) ->
+      result = {}
+      for data in [data4, data6]
+        for iface, adapters of data
+          result[iface] || = []
+          result[iface].push(adapters...)
+      # collect() does not return errors
+      callback(null, result)
 
 module.exports =
   collect: collect

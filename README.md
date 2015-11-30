@@ -10,11 +10,11 @@ This module depends on following commands by using [chid_process](https://nodejs
 	- `wmic path Win32_NetworkAdapterConfiguration get *`
 	- `wmic path Win32_NetworkAdapter get *`
 - darwin
-    - `route -n get -inet default`
-    - `route -n get -inet6 default`
+    - `netstat -rn -f inet`
+    - `netstat -rn -f inet6`
 - linux
-    - `route -n -A inet`
-    - `route -n -A inet6`
+    - `netstat -rn -A inet`
+    - `netstat -rn -A inet6`
 
 ## Installation
 
@@ -44,9 +44,15 @@ route.collect(function(error, data) {
 An example output:
 
 ```js
-{ en0: 
+{ en4: 
    [ { family: 'IPv4', address: '192.168.1.1' },
-     { family: 'IPv6', address: 'fe80::20b:a2ff:fede:2886%en0' } ] }
+     { family: 'IPv6', address: 'fe80::20b:a2ff:fede:2886%en4' } ],
+  en0: 
+   [ { family: 'IPv4', address: '192.168.1.1' },
+     { family: 'IPv6', address: 'fe80::20b:a2ff:fede:2886%en0' } ],
+  en8: 
+   [ { family: 'IPv4', address: '192.168.1.1' },
+     { family: 'IPv6', address: 'fe80::20b:a2ff:fede:2886%en8' } ] }
 ```
 
 #### Example 2
@@ -60,35 +66,36 @@ var os = require('os');
 var route = require('default-network');
 route.collect(function(error, data) {
   names = Object.keys(data);
-  console.log(os.networkInterfaces()[name[0]]);
+  // names[0] is 'en4'
+  console.log(os.networkInterfaces()[names[0]]);
 });
 ```
 
 An example output:
 
 ```js
-[ { address: '192.168.1.6',
+[ { address: 'fe80::6a5b:35ff:fe96:cc05',
+    netmask: 'ffff:ffff:ffff:ffff::',
+    family: 'IPv6',
+    mac: '00:00:00:00:00:00',
+    scopeid: 14,
+    internal: false },
+  { address: '2001:a0ae:7c22:0:6a5b:35ff:fe96:cc05',
+    netmask: 'ffff:ffff:ffff:ffff::',
+    family: 'IPv6',
+    mac: '00:00:00:00:00:00',
+    scopeid: 0,
+    internal: false },
+  { address: '2001:a0ae:7c22:0:a8d1:fef3:2917:cd87',
+    netmask: 'ffff:ffff:ffff:ffff::',
+    family: 'IPv6',
+    mac: '00:00:00:00:00:00',
+    scopeid: 0,
+    internal: false },
+  { address: '192.168.1.10',
     netmask: '255.255.255.0',
     family: 'IPv4',
     mac: '00:00:00:00:00:00',
-    internal: false },
-  { address: 'fe80::3636:3bff:fece:d106',
-    netmask: 'ffff:ffff:ffff:ffff::',
-    family: 'IPv6',
-    mac: '00:00:00:00:00:00',
-    scopeid: 4,
-    internal: false },
-  { address: '2001:a0ae:7c22:0:3636:3bff:fece:d106',
-    netmask: 'ffff:ffff:ffff:ffff::',
-    family: 'IPv6',
-    mac: '00:00:00:00:00:00',
-    scopeid: 0,
-    internal: false },
-  { address: '2001:a0ae:7c22:0:2994:aeb5:5973:5cd4',
-    netmask: 'ffff:ffff:ffff:ffff::',
-    family: 'IPv6',
-    mac: '00:00:00:00:00:00',
-    scopeid: 0,
     internal: false } ]
 ```
 

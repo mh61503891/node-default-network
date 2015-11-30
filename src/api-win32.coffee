@@ -80,8 +80,8 @@ getDefaultNetwork = (callback) ->
 
 collect = (callback) ->
   getDefaultNetwork (error, data) ->
-    return callback null, {} if error?
-    callback(error, data)
+    return callback(null, {} ) if error?
+    callback(null, data)
 
 module.exports =
   collect: collect

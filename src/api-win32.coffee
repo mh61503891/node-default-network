@@ -44,10 +44,10 @@ getDefaultGateway = (callback) ->
       for address in defaultGateway.split(';')
         switch net.isIP(address)
           when 4
-            data[index] || = []
+            data[index] = data[index] || []
             data[index].push {family: 'IPv4', address: address}
           when 6
-            data[index] || = []
+            data[index] = data[index] || []
             data[index].push {family: 'IPv6', address: address}
           else
             return callback(new Error("#{address} is not IP address"))

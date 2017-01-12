@@ -50,5 +50,8 @@
     "gulp-mocha": "2.2.0",
     "mocha": "2.3.4",
     "mocha-clean": "1.0.0"
+  },
+  "engines": {
+    "node": ">=4"
   }
 }

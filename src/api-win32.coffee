@@ -1,18 +1,28 @@
 net = require('net')
 exec = require('child_process').exec
 async = require('async')
-parseCSV = require('csv-parse')
+parseXML = require('xml2js').parseString
 
 wmic = (cls, keys, callback) ->
-  command = "wmic path #{cls} get #{keys.join(',')} /format:csv"
+  command = "wmic path #{cls} get #{keys.join(',')} /format:rawxml"
   exec command, (error, stdout, stderr) ->
     return callback(error) if error?
-    parseCSV stdout, {
-      columns: true
-      rowDelimiter: '\r\r\n'
-      skip_empty_lines: true
+    parseXML stdout, {
       trim: true
-    } , (error, records) ->
+      normalize: true
+      normalizeTags: true
+      mergeAttrs: true
+      async: true
+    } , (error, result) ->
+      records = []
+      for r in result.command.results[0].cim[0].instance
+        record = {}
+        for p in r.property || []
+          record[p.NAME] = p.value and p.value[0] or ''
+        for p in r['property.array'] || []
+          val = p['value.array']
+          record[p.NAME] = val and p['value.array'][0].value or ''
+        records.push(record)
       callback(error, records)
 
 getAdapterConfig = (callback) ->
@@ -36,12 +46,11 @@ getDefaultGateway = (callback) ->
       continue if not record['DefaultIPGateway']?
       continue if not record['Index']?
       continue if record['IPEnabled'] != 'TRUE'
-      continue if record['DefaultIPGateway'].trim() == ''
+      continue if record['DefaultIPGateway'].length == 0
       continue if isNaN(parseInt(record['Index']))
       index = record['Index']
-      defaultGateway = record['DefaultIPGateway'].trim()
-      defaultGateway = ((defaultGateway.match(/{(.*)}/) || [])[1] || '')
-      for address in defaultGateway.split(';')
+      defaultGateway = record['DefaultIPGateway']
+      for address in defaultGateway
         switch net.isIP(address)
           when 4
             data[index] = data[index] || []

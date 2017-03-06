@@ -14,7 +14,7 @@ getDefaultNetwork = (command, callback) ->
         return callback(new Error("parse error: #{stdout}"))
       if not net.isIP(defaultGateway)
         return callback(new Error("parse error: #{stdout}"))
-      data[defaultInterface] || = []
+      data[defaultInterface] = data[defaultInterface] || []
       family = switch net.isIP(defaultGateway)
         when 4 then 'IPv4'
         when 6 then 'IPv6'
@@ -42,7 +42,7 @@ collect = (callback) ->
       result = {}
       for data in [data4, data6]
         for iface, adapters of data
-          result[iface] || = []
+          result[iface] = result[iface] || []
           result[iface].push(adapters...)
       # collect() does not return errors
       callback(null, result)
